@@ -71,3 +71,29 @@ export const getUser = async (req, res, next) => {
     next(error);
   }
 };
+
+export const transformData = async (req, res, next) => {
+
+  try {
+    const input = req.body;
+
+    if (!Array.isArray(input)) {
+      return next(errorHandler({ error: 'Input must be an array of objects' }));
+    }
+
+    const result = input.reduce((acc, user) => {
+      if (user.name) {
+        acc[user.name] = {
+          age: user.age,
+          birthday: user.birthday
+        };
+      }
+      return acc;
+    }, {});
+
+    res.status(200).json(result);
+  } catch (err) {
+    console.error('Error transforming input:', err);
+     next(error);
+  }
+};
